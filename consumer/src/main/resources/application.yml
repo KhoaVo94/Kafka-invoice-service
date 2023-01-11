@@ -1,0 +1,31 @@
+server:
+  port: 8083
+spring:
+  profiles:
+    include: database
+  kafka:
+    template:
+      default-topic: paid-order
+    bootstrap-servers:
+      - localhost:9092
+      - localhost:9093
+      - localhost:9094
+    consumer:
+      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      value-deserializer: io.confluent.kafka.serializers.protobuf.KafkaProtobufDeserializer
+      group-id: paid-order-listener-group
+      properties:
+        specific.protobuf.value.type: com.khoavo.domain.generated.PaidOrder
+    properties:
+      schema.registry.url : http://localhost:8081
+  default:
+    due-days: 20
+    tax-percent: 10
+  flyway:
+    url: jdbc:mysql://localhost:3306
+    user: root
+    password: mysql
+    schemas: invoice_test
+mybatis:
+  mapper-locations: classpath*:/com/khoavo/**/*Mapper.xml
+

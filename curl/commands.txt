@@ -1,0 +1,42 @@
+EXAMPLE ORDER EVENT
+-----------------------
+
+curl -i \
+-d '{"seller" : {
+         "name": "testSeller-01",
+         "address" : {
+             "addressLine1" : "1234 street",
+             "city" : "Chicago",
+             "state" : "Illinois",
+             "country" : "USA",
+             "zip" : "11244"
+         }
+     },
+     "customer" : {
+         "name": "testCustomer-01",
+         "address" : {
+             "addressLine1" : "4321 street",
+             "city" : "New York",
+             "state" : "NY",
+             "country" : "USA",
+             "zip" : "12120"
+         }
+     },
+     "orderLineItems" : [
+         {
+         "name" : "Latte",
+         "description" : "MEDIUM",
+         "quantity" : 1,
+         "cost" : 3.99
+         },
+         {
+         "name" : "Macchiato",
+         "description" : "LARGE test...",
+         "quantity" : 2,
+         "cost" : 4.99
+         }
+     ],
+     "discountPercent" : 15,
+     "taxPercent" : 10}' \
+-H "Content-Type: application/json" \
+-X POST http://localhost:8082/v1/paid_order

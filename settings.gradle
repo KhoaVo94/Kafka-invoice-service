@@ -1,0 +1,5 @@
+rootProject.name = 'kafka-invoice-service'
+
+include 'service'
+include 'consumer'
+include 'schema'

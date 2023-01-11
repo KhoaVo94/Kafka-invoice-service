@@ -1,0 +1,48 @@
+spring:
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    test-on-borrow: true
+    test-while-idle: true
+    min-evictable-idle-time-millis: 60000
+    time-between-eviction-runs-millis: 300000
+    validation-query:
+        reader: select 1
+        writer: select case when @@read_only + @@innodb_read_only = 0 then 1 else (select table_name from information_schema.tables) end as `1`
+    tomcat:
+      max-age: 90000
+
+    ## reader
+    query:
+      ## datasource
+      jdbc-url: jdbc:mysql://localhost:3306/invoice_test?sessionVariables=sql_mode='NO_ENGINE_SUBSTITUTION'&jdbcCompliantTruncation=false
+      username: root
+      password: mysql
+
+      driver-class-name: ${spring.datasource.driver-class-name}
+      sql-script-encoding: ${spring.sql.init.encoding}
+      test-on-borrow: ${spring.datasource.test-on-borrow}
+      validation-query: ${spring.datasource.validation-query.reader}
+      test-while-idle: ${spring.datasource.test-while-idle}
+      min-evictable-idle-time-millis: ${spring.datasource.min-evictable-idle-time-millis}
+      time-between-eviction-runs-millis: ${spring.datasource.time-between-eviction-runs-millis}
+      max-age: ${spring.datasource.tomcat.max-age}
+
+    ## writer
+    register:
+      ## datasource
+      jdbc-url: jdbc:mysql://localhost:3306/invoice_test?sessionVariables=sql_mode='NO_ENGINE_SUBSTITUTION'&jdbcCompliantTruncation=false
+      username: root
+      password: mysql
+
+      driver-class-name: ${spring.datasource.driver-class-name}
+      sql-script-encoding: ${spring.sql.init.encoding}
+      test-on-borrow: ${spring.datasource.test-on-borrow}
+      validation-query: ${spring.datasource.validation-query.reader}
+      test-while-idle: ${spring.datasource.test-while-idle}
+      min-evictable-idle-time-millis: ${spring.datasource.min-evictable-idle-time-millis}
+      time-between-eviction-runs-millis: ${spring.datasource.time-between-eviction-runs-millis}
+      max-age: ${spring.datasource.tomcat.max-age}
+
+  sql:
+    init:
+      encoding: utf-8

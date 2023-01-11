@@ -1,0 +1,38 @@
+syntax = "proto3";
+
+package com.khoavo.domain.generated;
+
+import "google/protobuf/timestamp.proto";
+
+option java_multiple_files = true;
+
+message PaidOrder {
+  string id = 1;
+  string invoice_number = 2;
+  Presenter customer = 3;
+  Presenter seller = 4;
+  repeated Item items = 5;
+  google.protobuf.Timestamp order_time = 6;
+  int32 discount_percent = 7;
+  int32 tax_percent = 8;
+}
+
+message Presenter {
+  string name = 1;
+  Address address = 2;
+}
+
+message Address {
+  string addressLine = 1;
+  string city = 2;
+  string country = 3;
+  string stateProvince = 4;
+  string zip = 5;
+}
+
+message Item {
+  string name = 1;
+  string description = 2;
+  int32 quantity = 3;
+  double rate = 4;
+}

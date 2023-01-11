@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.khoavo.mapper.InvoiceMapper">
+    <resultMap id="Item" type="com.khoavo.domain.Item">
+        <result property="name" column="name"/>
+        <result property="description" column="description"/>
+        <result property="amount.quantity" column="quantity"/>
+        <result property="amount.rate" column="rate"/>
+    </resultMap>
+
+    <resultMap id="Invoice" type="com.khoavo.domain.Invoice">
+        <result property="invoiceNumber.value" column="invoice_number"/>
+        <result property="seller.id" column="seller_id"/>
+        <result property="seller.name" column="seller_name"/>
+        <result property="seller.address.addressLine" column="seller_address_line"/>
+        <result property="seller.address.city" column="seller_city"/>
+        <result property="seller.address.country" column="seller_country"/>
+        <result property="seller.address.stateProvince" column="seller_state"/>
+        <result property="seller.address.zip" column="seller_zip"/>
+        <result property="customer.name" column="customer_name"/>
+        <result property="customer.address.addressLine" column="customer_address_line"/>
+        <result property="customer.address.city" column="customer_city"/>
+        <result property="customer.address.country" column="customer_country"/>
+        <result property="customer.address.stateProvince" column="customer_state"/>
+        <result property="customer.address.zip" column="customer_zip"/>
+        <result property="invoiceDate.value" column="invoice_date"/>
+        <result property="discount.discountPercent" column="discount_rate"/>
+        <result property="tax.taxPercent" column="tax_rate"/>
+    </resultMap>
+
+    <select id="findAll" resultMap="Invoice">
+        SELECT
+            inv.invoice_number,
+            seller_id,
+            customer_id,
+            discount_rate,
+            tax_rate,
+            invoice_date,
+            seller.name as seller_name,
+            seller.address_line as seller_address_line,
+            seller.city as seller_city,
+            seller.country as seller_country,
+            seller.state as seller_state,
+            seller.zip as seller_zip,
+            customer.name as customer_name,
+            customer.address_line as customer_address_line,
+            customer.city as customer_city,
+            customer.country as customer_country,
+            customer.state as customer_state,
+            customer.zip as customer_zip
+        FROM invoice_test.invoices inv
+                 JOIN invoice_test.persons as seller ON inv.seller_id = seller.id
+                 JOIN invoice_test.persons as customer ON inv.customer_id = customer.id
+    </select>
+
+    <select id="findBy" resultMap="Invoice">
+        SELECT
+            inv.invoice_number,
+            seller_id,
+            customer_id,
+            discount_rate,
+            tax_rate,
+            invoice_date,
+            seller.name,
+            seller.address_line as seller_address_line,
+            seller.city as seller_city,
+            seller.country as seller_country,
+            seller.state as seller_state,
+            seller.zip as seller_zip,
+            customer.name,
+            customer.address_line as customer_address_line,
+            customer.city as customer_city,
+            customer.country as customer_country,
+            customer.state as customer_state,
+            customer.zip as customer_zip
+        FROM invoice_test.invoices inv
+                 JOIN invoice_test.persons as seller ON inv.seller_id = seller.id
+                 JOIN invoice_test.persons as customer ON inv.customer_id = customer.id
+        WHERE inv.invoice_number = #{invoiceNumber.value}
+    </select>
+
+    <select id="selectItemsBy" resultMap="Item">
+        SELECT
+            name,
+            description,
+            rate,
+            quantity,
+            invoice_number
+        FROM invoice_test.items its
+                 JOIN invoice_test.invoices as inv USING (invoice_number)
+        WHERE its.invoice_number = #{invoiceNumber.value}
+    </select>
+
+    <insert id="registerPerson" useGeneratedKeys="true" keyProperty="person.id">
+        INSERT INTO invoice_test.persons (name, address_line, city, country, state, zip)
+        VALUES (#{person.name}, #{person.address.addressLine}, #{person.address.city}, #{person.address.country}, #{person.address.stateProvince}, #{person.address.zip})
+    </insert>
+
+    <insert id="registerInvoiceItems">
+        INSERT INTO invoice_test.items (name, description, rate, quantity, invoice_number)
+        VALUES
+        <foreach collection="items.values" item="item" open="(" close=")" separator="),(">
+            #{item.name},#{item.description},#{item.amount.rate},#{item.amount.quantity},#{invoiceNumber.value}
+        </foreach>
+    </insert>
+
+    <insert id="registerInvoice">
+        <bind name="invoiceDate" value="invoice.invoiceDate.toString()"/>
+        INSERT INTO invoice_test.invoices (invoice_number, seller_id, customer_id, discount_rate, tax_rate, invoice_date)
+        VALUES (#{invoice.invoiceNumber.value}, #{invoice.seller.id}, #{invoice.customer.id}, #{invoice.discount.discountPercent}, #{invoice.tax.taxPercent}, #{invoiceDate})
+    </insert>
+
+</mapper>

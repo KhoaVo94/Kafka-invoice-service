@@ -1,0 +1,37 @@
+buildscript {
+    repositories {
+        mavenCentral()
+    }
+    dependencies {
+        classpath 'com.google.protobuf:protobuf-gradle-plugin:0.8.19'
+    }
+}
+
+plugins {
+    id 'com.google.protobuf' version '0.8.19'
+    id 'java'
+}
+
+group = 'com.khoavo'
+version = '1.0-SNAPSHOT'
+sourceCompatibility = '17'
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    implementation 'com.google.protobuf:protobuf-java:3.21.5'
+    runtimeOnly 'com.google.protobuf:protobuf-java-util:3.21.5'
+}
+
+tasks.named('clean') {
+    delete "$projectDir/src/main/java"
+}
+
+protobuf {
+    protoc {
+        artifact = 'com.google.protobuf:protoc:3.21.5'
+        generatedFilesBaseDir = "$projectDir/src"
+    }
+}
